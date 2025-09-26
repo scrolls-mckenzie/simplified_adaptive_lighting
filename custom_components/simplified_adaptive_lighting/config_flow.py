@@ -157,11 +157,11 @@ class SimplifiedAdaptiveLightingConfigFlow(config_entries.ConfigFlow, domain=DOM
             if entity_id.startswith("light.") and entity.state != "unavailable":
                 # Check if the light supports brightness and color temperature
                 attributes = entity.attributes
+                supported_color_modes = attributes.get("supported_color_modes", [])
                 if (
-                    "brightness" in attributes.get("supported_features", []) or
-                    attributes.get("supported_color_modes") and 
+                    supported_color_modes and 
                     any(mode in ["color_temp", "hs", "rgb", "rgbw", "rgbww"] 
-                        for mode in attributes.get("supported_color_modes", []))
+                        for mode in supported_color_modes)
                 ):
                     friendly_name = attributes.get("friendly_name", entity_id)
                     light_entities[entity_id] = friendly_name
