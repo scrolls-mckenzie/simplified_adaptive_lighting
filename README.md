@@ -1,0 +1,1 @@
+# simplified_adaptive_lighting
