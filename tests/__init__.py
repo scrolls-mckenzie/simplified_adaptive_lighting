@@ -1,0 +1,1 @@
+"""Tests for simplified adaptive lighting integration."""

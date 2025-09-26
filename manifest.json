@@ -1,0 +1,14 @@
+{
+  "domain": "simplified_adaptive_lighting",
+  "name": "Simplified Adaptive Lighting",
+  "version": "1.0.0",
+  "documentation": "https://github.com/user/simplified-adaptive-lighting",
+  "issue_tracker": "https://github.com/user/simplified-adaptive-lighting/issues",
+  "dependencies": ["light"],
+  "codeowners": ["@user"],
+  "requirements": ["astral>=3.2"],
+  "config_flow": true,
+  "iot_class": "local_polling",
+  "integration_type": "hub",
+  "after_dependencies": ["light"]
+}

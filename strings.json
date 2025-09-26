@@ -1,0 +1,36 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Simplified Adaptive Lighting Setup",
+        "description": "Configure basic settings for adaptive lighting",
+        "data": {
+          "name": "Integration Name",
+          "min_brightness": "Minimum Brightness (1-255)",
+          "max_brightness": "Maximum Brightness (1-255)",
+          "min_color_temp": "Minimum Color Temperature (K)",
+          "max_color_temp": "Maximum Color Temperature (K)"
+        }
+      },
+      "select_lights": {
+        "title": "Select Lights",
+        "description": "Choose which lights to control with adaptive lighting",
+        "data": {
+          "lights": "Lights to Control"
+        }
+      },
+      "configure_lights": {
+        "title": "Configure Individual Lights",
+        "description": "Adjust white balance and brightness for each light"
+      }
+    },
+    "error": {
+      "no_lights_selected": "Please select at least one light",
+      "no_lights_available": "No compatible lights found"
+    },
+    "abort": {
+      "already_configured": "Integration is already configured",
+      "no_lights_available": "No compatible lights available"
+    }
+  }
+}
