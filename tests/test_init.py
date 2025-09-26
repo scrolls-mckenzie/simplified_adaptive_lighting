@@ -12,6 +12,9 @@ from custom_components.simplified_adaptive_lighting import (
     async_setup,
     async_setup_entry,
     async_unload_entry,
+    SERVICE_APPLY_ADAPTIVE_SETTINGS,
+    SERVICE_ENABLE_ADAPTIVE_LIGHTING,
+    SERVICE_DISABLE_ADAPTIVE_LIGHTING,
 )
 from custom_components.simplified_adaptive_lighting.const import DOMAIN
 
@@ -80,6 +83,11 @@ class TestAsyncSetupEntry:
             
             # Verify platform setup was called
             mock_forward.assert_called_once_with(mock_config_entry, ["switch"])
+            
+            # Verify services were registered
+            assert hass.services.has_service(DOMAIN, SERVICE_APPLY_ADAPTIVE_SETTINGS)
+            assert hass.services.has_service(DOMAIN, SERVICE_ENABLE_ADAPTIVE_LIGHTING)
+            assert hass.services.has_service(DOMAIN, SERVICE_DISABLE_ADAPTIVE_LIGHTING)
 
     @patch("custom_components.simplified_adaptive_lighting.AdaptiveLightingManager")
     async def test_setup_entry_manager_setup_fails(
@@ -167,6 +175,11 @@ class TestAsyncUnloadEntry:
             
             # Verify data was cleaned up
             assert mock_config_entry.entry_id not in hass.data[DOMAIN]
+            
+            # Verify services were unregistered (since no entries left)
+            assert not hass.services.has_service(DOMAIN, SERVICE_APPLY_ADAPTIVE_SETTINGS)
+            assert not hass.services.has_service(DOMAIN, SERVICE_ENABLE_ADAPTIVE_LIGHTING)
+            assert not hass.services.has_service(DOMAIN, SERVICE_DISABLE_ADAPTIVE_LIGHTING)
 
     async def test_unload_entry_no_manager(self, hass: HomeAssistant, mock_config_entry):
         """Test unload when no manager is stored."""

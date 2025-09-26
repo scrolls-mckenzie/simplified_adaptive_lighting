@@ -1,0 +1,53 @@
+apply_adaptive_settings:
+  description: Manually apply current adaptive lighting settings to specified lights.
+  fields:
+    entity_id:
+      description: The entity_id of the adaptive lighting switch.
+      required: true
+      selector:
+        entity:
+          integration: simplified_adaptive_lighting
+          domain: switch
+          multiple: false
+    lights:
+      description: A light (or list of lights) to apply the adaptive settings to.
+      required: false
+      selector:
+        entity:
+          domain: light
+          multiple: true
+    transition:
+      description: Duration of transition when lights change, in seconds.
+      required: false
+      default: 1
+      example: 2
+      selector:
+        number:
+          min: 0
+          max: 300
+          step: 0.1
+          unit_of_measurement: "s"
+
+enable_adaptive_lighting:
+  description: Enable adaptive lighting for the specified switch.
+  fields:
+    entity_id:
+      description: The entity_id of the adaptive lighting switch to enable.
+      required: true
+      selector:
+        entity:
+          integration: simplified_adaptive_lighting
+          domain: switch
+          multiple: false
+
+disable_adaptive_lighting:
+  description: Disable adaptive lighting for the specified switch.
+  fields:
+    entity_id:
+      description: The entity_id of the adaptive lighting switch to disable.
+      required: true
+      selector:
+        entity:
+          integration: simplified_adaptive_lighting
+          domain: switch
+          multiple: false
