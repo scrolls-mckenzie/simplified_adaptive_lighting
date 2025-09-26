@@ -39,9 +39,8 @@ class SimplifiedAdaptiveLightingConfigFlow(config_entries.ConfigFlow, domain=DOM
     def __init__(self) -> None:
         """Initialize the config flow."""
         self._config: dict[str, Any] = {}
-        self._selected_lights: list[str] = []
-
-    async def async_step_user(
+        self._selected_lights: list[str] = [] 
+   async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the initial step."""
@@ -72,8 +71,8 @@ class SimplifiedAdaptiveLightingConfigFlow(config_entries.ConfigFlow, domain=DOM
             step_id="user",
             data_schema=data_schema,
             errors=errors,
-        )    a
-sync def async_step_select_lights(
+        )  
+  async def async_step_select_lights(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle light selection step."""
@@ -102,9 +101,8 @@ sync def async_step_select_lights(
             step_id="select_lights",
             data_schema=data_schema,
             errors=errors,
-        )
-
-    async def async_step_configure_lights(
+        )    
+async def async_step_configure_lights(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle per-light configuration step."""
@@ -144,8 +142,8 @@ sync def async_step_select_lights(
         return self.async_show_form(
             step_id="configure_lights",
             data_schema=data_schema,
-        )    def 
-_get_light_entities(self) -> dict[str, str]:
+        )    d
+ef _get_light_entities(self) -> dict[str, str]:
         """Get available light entities."""
         light_entities = {}
         
