@@ -32,5 +32,19 @@
       "already_configured": "Integration is already configured",
       "no_lights_available": "No compatible lights available"
     }
+  },
+  "services": {
+    "apply_adaptive_settings": {
+      "name": "Apply adaptive settings",
+      "description": "Manually apply current adaptive lighting settings to specified lights."
+    },
+    "enable_adaptive_lighting": {
+      "name": "Enable adaptive lighting",
+      "description": "Enable adaptive lighting for the specified switch."
+    },
+    "disable_adaptive_lighting": {
+      "name": "Disable adaptive lighting", 
+      "description": "Disable adaptive lighting for the specified switch."
+    }
   }
 }
