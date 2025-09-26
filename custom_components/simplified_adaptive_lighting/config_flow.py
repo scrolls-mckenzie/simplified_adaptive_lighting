@@ -152,7 +152,8 @@ class SimplifiedAdaptiveLightingConfigFlow(config_entries.ConfigFlow, domain=DOM
         light_entities = {}
         
         # Get all light entities from the registry
-        for entity_id, entity in self.hass.states.async_all().items():
+        for entity in self.hass.states.async_all():
+            entity_id = entity.entity_id
             if entity_id.startswith("light.") and entity.state != "unavailable":
                 # Check if the light supports brightness and color temperature
                 attributes = entity.attributes
