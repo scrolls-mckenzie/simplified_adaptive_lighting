@@ -5,8 +5,10 @@
   "documentation": "https://github.com/user/simplified-adaptive-lighting",
   "issue_tracker": "https://github.com/user/simplified-adaptive-lighting/issues",
   "dependencies": [],
-  "codeowners": ["@user"],
-  "requirements": ["astral>=3.2"],
+  "codeowners": [
+    "@user"
+  ],
+  "requirements": [],
   "config_flow": true,
   "iot_class": "local_polling",
   "integration_type": "device"
