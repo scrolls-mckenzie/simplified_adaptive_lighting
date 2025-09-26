@@ -72,9 +72,8 @@ class SimplifiedAdaptiveLightingConfigFlow(config_entries.ConfigFlow, domain=DOM
             step_id="user",
             data_schema=data_schema,
             errors=errors,
-        )
-
-    async def async_step_select_lights(
+        )    a
+sync def async_step_select_lights(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle light selection step."""
@@ -145,9 +144,8 @@ class SimplifiedAdaptiveLightingConfigFlow(config_entries.ConfigFlow, domain=DOM
         return self.async_show_form(
             step_id="configure_lights",
             data_schema=data_schema,
-        )
-
-    def _get_light_entities(self) -> dict[str, str]:
+        )    def 
+_get_light_entities(self) -> dict[str, str]:
         """Get available light entities."""
         light_entities = {}
         
@@ -155,14 +153,11 @@ class SimplifiedAdaptiveLightingConfigFlow(config_entries.ConfigFlow, domain=DOM
         for entity in self.hass.states.async_all():
             entity_id = entity.entity_id
             if entity_id.startswith("light.") and entity.state != "unavailable":
-                # Check if the light supports brightness and color temperature
+                # Check if the light supports color modes we care about
                 attributes = entity.attributes
                 supported_color_modes = attributes.get("supported_color_modes", [])
-                if (
-                    supported_color_modes and 
-                    any(mode in ["color_temp", "hs", "rgb", "rgbw", "rgbww"] 
-                        for mode in supported_color_modes)
-                ):
+                if supported_color_modes:
+                    # Accept any light with color modes - they all support brightness
                     friendly_name = attributes.get("friendly_name", entity_id)
                     light_entities[entity_id] = friendly_name
         
