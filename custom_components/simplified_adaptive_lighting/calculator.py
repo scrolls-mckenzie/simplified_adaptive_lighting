@@ -5,9 +5,8 @@ import math
 from datetime import datetime, time, timedelta
 from typing import Any
 
-from astral import LocationInfo
-from astral.sun import sun
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.sun import get_astral_location
 from homeassistant.util import dt as dt_util
 
 
@@ -137,26 +136,19 @@ class TimeBasedCalculator:
             "color_temp_kelvin": corrected_color_temp,
         }
     
-    def _get_location_info(self) -> LocationInfo:
-        """Get location info from Home Assistant configuration."""
+    def _get_astral_location(self):
+        """Get astral location from Home Assistant."""
         if self._location_info is None:
-            # Get location from Home Assistant config
-            config = self.hass.config
-            self._location_info = LocationInfo(
-                name="Home Assistant",
-                region="",
-                timezone=str(config.time_zone),
-                latitude=config.latitude,
-                longitude=config.longitude,
-            )
+            self._location_info, _ = get_astral_location(self.hass)
         return self._location_info
     
     def _get_sun_times(self, dt: datetime) -> dict[str, datetime]:
         """Get sun times for the given date."""
-        location = self._get_location_info()
+        location = self._get_astral_location()
         
         try:
-            # Get sun times for the date
+            # Get sun times for the date using astral location from HA
+            from astral.sun import sun
             sun_times = sun(location.observer, date=dt.date())
             return {
                 'sunrise': sun_times['sunrise'].replace(tzinfo=dt.tzinfo),
