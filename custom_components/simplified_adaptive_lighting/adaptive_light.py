@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
+    ATTR_COLOR_TEMP_KELVIN,
     ATTR_TRANSITION,
     ColorMode,
     LightEntity,
@@ -95,8 +95,8 @@ class AdaptiveLight(LightEntity, RestoreEntity):
             self._is_on = last_state.state == "on"
             if last_state.attributes.get(ATTR_BRIGHTNESS):
                 self._brightness = last_state.attributes[ATTR_BRIGHTNESS]
-            if last_state.attributes.get(ATTR_COLOR_TEMP):
-                self._color_temp = last_state.attributes[ATTR_COLOR_TEMP]
+            if last_state.attributes.get(ATTR_COLOR_TEMP_KELVIN):
+                self._color_temp = last_state.attributes[ATTR_COLOR_TEMP_KELVIN]
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn on the adaptive light and apply adaptive settings to target."""
@@ -117,7 +117,7 @@ class AdaptiveLight(LightEntity, RestoreEntity):
         
         # Override with any explicitly provided values
         final_brightness = kwargs.get(ATTR_BRIGHTNESS, corrected_brightness)
-        final_color_temp = kwargs.get(ATTR_COLOR_TEMP, corrected_color_temp)
+        final_color_temp = kwargs.get(ATTR_COLOR_TEMP_KELVIN, corrected_color_temp)
         transition = kwargs.get(ATTR_TRANSITION, 1)
         
         # Update internal state
@@ -177,7 +177,7 @@ class AdaptiveLight(LightEntity, RestoreEntity):
                 if brightness is not None:
                     service_data[ATTR_BRIGHTNESS] = brightness
                 if color_temp is not None:
-                    service_data[ATTR_COLOR_TEMP] = color_temp
+                    service_data[ATTR_COLOR_TEMP_KELVIN] = color_temp
                 if transition is not None:
                     service_data[ATTR_TRANSITION] = transition
                 

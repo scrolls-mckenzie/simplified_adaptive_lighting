@@ -94,7 +94,6 @@ class AdaptiveLightingSwitch(SwitchEntity, RestoreEntity):
             if self._is_on:
                 try:
                     await self._enable_adaptive_lights()
-                    await self._manager.enable_interception()
                     _LOGGER.debug("Restored adaptive lighting state: enabled")
                 except Exception as err:
                     _LOGGER.error("Failed to restore adaptive lighting state: %s", err)
@@ -121,7 +120,6 @@ class AdaptiveLightingSwitch(SwitchEntity, RestoreEntity):
             "adaptive_lights_enabled": adaptive_light_states["enabled_count"],
             "adaptive_lights_on": adaptive_light_states["on_count"],
             "adaptive_lights_available": adaptive_light_states["available_count"],
-            "interception_enabled": self._manager.is_interception_enabled,
         }
 
     async def async_turn_on(self, **kwargs: Any) -> None:
@@ -130,25 +128,21 @@ class AdaptiveLightingSwitch(SwitchEntity, RestoreEntity):
             # Enable adaptive functionality on all adaptive light entities
             await self._enable_adaptive_lights()
             
-            # Also enable service call interception for backward compatibility
-            await self._manager.enable_interception()
-            
-            # Verify at least one method was enabled
-            if self._manager.is_interception_enabled or self._get_adaptive_light_states()["enabled_count"] > 0:
+            # Verify adaptive lights were enabled
+            if self._get_adaptive_light_states()["enabled_count"] > 0:
                 self._is_on = True
                 _LOGGER.debug("Adaptive lighting enabled successfully")
             else:
                 self._is_on = False
-                _LOGGER.warning("Adaptive lighting failed to enable - no adaptive lights or interception active")
+                _LOGGER.warning("Adaptive lighting failed to enable - no adaptive lights active")
                 
         except Exception as err:
             _LOGGER.error("Failed to enable adaptive lighting: %s", err)
             # Fallback to disabled state on any setup failure
             self._is_on = False
             try:
-                # Ensure clean state by attempting to disable both methods
+                # Ensure clean state by attempting to disable adaptive lights
                 await self._disable_adaptive_lights()
-                await self._manager.disable_interception()
             except Exception as cleanup_err:
                 _LOGGER.error("Failed to cleanup after enable failure: %s", cleanup_err)
         
@@ -160,24 +154,18 @@ class AdaptiveLightingSwitch(SwitchEntity, RestoreEntity):
             # Disable adaptive functionality on all adaptive light entities
             await self._disable_adaptive_lights()
             
-            # Also disable service call interception
-            await self._manager.disable_interception()
-            
-            # Verify both methods were disabled
-            if not self._manager.is_interception_enabled and self._get_adaptive_light_states()["enabled_count"] == 0:
+            # Verify adaptive lights were disabled
+            if self._get_adaptive_light_states()["enabled_count"] == 0:
                 self._is_on = False
                 _LOGGER.debug("Adaptive lighting disabled successfully")
             else:
                 # Keep current state if disable failed
-                _LOGGER.warning("Adaptive lighting failed to disable - some adaptive lights or interception still active")
+                _LOGGER.warning("Adaptive lighting failed to disable - some adaptive lights still active")
                 
         except Exception as err:
             _LOGGER.error("Failed to disable adaptive lighting: %s", err)
             # Always reflect the actual state
-            self._is_on = (
-                self._manager.is_interception_enabled or 
-                self._get_adaptive_light_states()["enabled_count"] > 0
-            )
+            self._is_on = self._get_adaptive_light_states()["enabled_count"] > 0
         
         self.async_write_ha_state()
 
@@ -187,7 +175,6 @@ class AdaptiveLightingSwitch(SwitchEntity, RestoreEntity):
         if self._is_on:
             try:
                 await self._disable_adaptive_lights()
-                await self._manager.disable_interception()
                 _LOGGER.debug("Cleaned up adaptive lighting on entity removal")
             except Exception as err:
                 _LOGGER.error("Failed to cleanup adaptive lighting: %s", err)

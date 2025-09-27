@@ -26,6 +26,5 @@ SERVICE_LIGHT_TOGGLE = "light.toggle"
 
 # Attributes
 ATTR_BRIGHTNESS = "brightness"
-ATTR_COLOR_TEMP = "color_temp"
-ATTR_KELVIN = "kelvin"
+ATTR_COLOR_TEMP_KELVIN = "color_temp_kelvin"
 ATTR_TRANSITION = "transition"

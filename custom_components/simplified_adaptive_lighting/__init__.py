@@ -52,7 +52,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # Register services
         await _async_register_services(hass)
         
-        # Set up platforms (switch only - we intercept light calls, don't create light entities)
+        # Set up platforms (switch and light entities)
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
         
         _LOGGER.info("Successfully set up Simplified Adaptive Lighting integration")
@@ -75,10 +75,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entry_data = hass.data.get(DOMAIN, {}).get(entry.entry_id, {})
         manager = entry_data.get("manager")
         
-        # Disable service interception before unloading
+        # Clean up manager before unloading
         if manager:
-            await manager.disable_interception()
-            _LOGGER.debug("Disabled service interception for entry %s", entry.entry_id)
+            _LOGGER.debug("Cleaning up manager for entry %s", entry.entry_id)
         
         # Unload platforms
         unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
@@ -254,7 +253,7 @@ async def _async_register_services(hass: HomeAssistant) -> None:
             # Prepare service data
             service_data = {
                 "entity_id": target_entity_id,
-                "kelvin": color_temp_kelvin,
+                "color_temp_kelvin": color_temp_kelvin,
                 "transition": transition,
             }
             

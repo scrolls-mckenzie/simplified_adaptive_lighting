@@ -6,8 +6,7 @@ from typing import Any
 
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_KELVIN,
+    ATTR_COLOR_TEMP_KELVIN,
     ATTR_TRANSITION,
     ColorMode,
     LightEntity,
@@ -192,13 +191,9 @@ class AdaptiveLightEntity(LightEntity):
             attributes = target_state.attributes
             self._brightness = attributes.get(ATTR_BRIGHTNESS)
             
-            # Handle color temperature - check both kelvin and mireds
-            if ATTR_KELVIN in attributes:
-                self._color_temp = attributes[ATTR_KELVIN]
-            elif ATTR_COLOR_TEMP in attributes:
-                # Convert mireds to kelvin if needed
-                mireds = attributes[ATTR_COLOR_TEMP]
-                self._color_temp = int(1000000 / mireds) if mireds > 0 else None
+            # Handle color temperature in kelvin
+            if ATTR_COLOR_TEMP_KELVIN in attributes:
+                self._color_temp = attributes[ATTR_COLOR_TEMP_KELVIN]
             else:
                 self._color_temp = None
         else:
@@ -259,8 +254,8 @@ class AdaptiveLightEntity(LightEntity):
                     adaptive_kwargs[ATTR_BRIGHTNESS] = adaptive_settings.brightness
                 
                 # Apply adaptive color temperature if not specified by user
-                if ATTR_COLOR_TEMP not in kwargs and ATTR_KELVIN not in kwargs:
-                    adaptive_kwargs[ATTR_KELVIN] = adaptive_settings.color_temp_kelvin
+                if ATTR_COLOR_TEMP_KELVIN not in kwargs:
+                    adaptive_kwargs[ATTR_COLOR_TEMP_KELVIN] = adaptive_settings.color_temp_kelvin
                 
                 # Apply transition if not specified
                 if ATTR_TRANSITION not in kwargs:
@@ -301,8 +296,7 @@ class AdaptiveLightEntity(LightEntity):
         return (
             not self._adaptive_enabled or
             ATTR_BRIGHTNESS in kwargs or 
-            ATTR_COLOR_TEMP in kwargs or 
-            ATTR_KELVIN in kwargs
+            ATTR_COLOR_TEMP_KELVIN in kwargs
         )
 
     async def _async_call_target_service(self, service: str, **kwargs: Any) -> None:

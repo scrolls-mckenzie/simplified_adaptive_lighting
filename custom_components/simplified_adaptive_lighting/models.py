@@ -52,6 +52,6 @@ class AdaptiveSettings:
         """Convert to service call data format."""
         return {
             "brightness": self.brightness,
-            "kelvin": self.color_temp_kelvin,
+            "color_temp_kelvin": self.color_temp_kelvin,
             "transition": self.transition,
         }
