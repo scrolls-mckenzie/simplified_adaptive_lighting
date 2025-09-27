@@ -183,8 +183,7 @@ class SimplifiedAdaptiveLightingConfigFlow(config_entries.ConfigFlow, domain=DOM
         """Get the options flow for this handler."""
         return OptionsFlow(config_entry)
 
-class
- OptionsFlow(config_entries.OptionsFlow):
+class OptionsFlow(config_entries.OptionsFlow):
     """Handle options flow for Simplified Adaptive Lighting."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
