@@ -55,6 +55,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # Set up platforms (switch and light entities)
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
         
+        # Add options update listener
+        entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+        
         _LOGGER.info("Successfully set up Simplified Adaptive Lighting integration")
         return True
         
@@ -102,6 +105,12 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if DOMAIN in hass.data:
             hass.data[DOMAIN].pop(entry.entry_id, None)
         return False
+
+
+async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload config entry."""
+    await async_unload_entry(hass, entry)
+    await async_setup_entry(hass, entry)
 
 
 # Service schemas

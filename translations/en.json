@@ -33,6 +33,73 @@
       "no_lights_available": "No compatible lights available"
     }
   },
+  "options": {
+    "step": {
+      "main_menu": {
+        "title": "Adaptive Lighting Options",
+        "description": "Currently managing {configured_count} lights: {configured_lights}",
+        "menu_options": {
+          "configure_light": "Configure Individual Light",
+          "add_lights": "Add New Lights",
+          "remove_lights": "Remove Lights",
+          "global_settings": "Global Settings"
+        }
+      },
+      "select_light_to_configure": {
+        "title": "Select Light to Configure",
+        "description": "Choose which light to adjust",
+        "data": {
+          "light": "Light to Configure"
+        }
+      },
+      "configure_selected_light": {
+        "title": "Configure {light_name}",
+        "description": "Adjust white balance and brightness settings for this light",
+        "data": {
+          "min_color_temp": "Minimum Color Temperature (K)",
+          "max_color_temp": "Maximum Color Temperature (K)",
+          "white_balance_offset": "White Balance Offset (K)",
+          "brightness_factor": "Brightness Factor"
+        },
+        "data_description": {
+          "white_balance_offset": "Positive values make warmer, negative values make cooler (-1000 to +1000)",
+          "brightness_factor": "Multiplier for brightness (0.1 = 10%, 1.0 = 100%, 2.0 = 200%)"
+        }
+      },
+      "add_lights": {
+        "title": "Add New Lights",
+        "description": "Select additional lights to control with adaptive lighting",
+        "data": {
+          "lights": "Lights to Add"
+        }
+      },
+      "remove_lights": {
+        "title": "Remove Lights",
+        "description": "Select lights to remove from adaptive lighting control",
+        "data": {
+          "lights": "Lights to Remove"
+        }
+      },
+      "global_settings": {
+        "title": "Global Settings",
+        "description": "Configure default brightness and color temperature ranges",
+        "data": {
+          "min_brightness": "Minimum Brightness (1-255)",
+          "max_brightness": "Maximum Brightness (1-255)",
+          "min_color_temp": "Minimum Color Temperature (K)",
+          "max_color_temp": "Maximum Color Temperature (K)"
+        }
+      }
+    },
+    "error": {
+      "no_lights_selected": "Please select at least one light",
+      "no_lights_configured": "No lights are currently configured",
+      "light_not_found": "Selected light configuration not found"
+    },
+    "abort": {
+      "no_lights_configured": "No lights are currently configured"
+    }
+  },
   "services": {
     "apply_adaptive_settings": {
       "name": "Apply adaptive settings",
