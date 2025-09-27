@@ -116,8 +116,9 @@ disable_adaptive_per_light:
         entity:
           integration: simplified_adaptive_lighting
           domain: light
-          multiple: truet
-est_white_balance:
+          multiple: true
+
+test_white_balance:
   description: Test white balance offset for a light to help fine-tune color matching across different brands.
   fields:
     entity_id:
