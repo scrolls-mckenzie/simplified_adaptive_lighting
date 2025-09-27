@@ -5,6 +5,7 @@ A streamlined adaptive lighting integration for Home Assistant that automaticall
 ## Features
 
 - **Seamless Integration**: Works with any control source (Home Assistant UI, HomeKit, automations, etc.)
+- **HomeKit Compatible**: Adaptive light entities can be shared to HomeKit through Homebridge
 - **Per-Light Configuration**: Individual white balance and brightness adjustments for each light
 - **Time-Based Adaptation**: Automatic brightness and color temperature adjustments throughout the day
 - **Simple Setup**: Easy configuration through Home Assistant's UI
@@ -63,6 +64,57 @@ Adjust the overall brightness level for individual lights:
 - **Values > 1.0**: Make lights brighter
 - **Values < 1.0**: Make lights dimmer
 - **Range**: 0.1x to 2.0x
+
+## HomeKit Integration
+
+The adaptive light entities created by this integration are fully compatible with HomeKit through Homebridge:
+
+### Setup with Homebridge
+
+1. Install the [Homebridge Home Assistant plugin](https://github.com/home-assistant/homebridge-homeassistant)
+2. Configure the plugin to include your adaptive light entities
+3. In your Homebridge configuration, add the adaptive light entities to the `include_entities` list:
+
+```json
+{
+  "platforms": [
+    {
+      "platform": "HomeAssistant",
+      "host": "http://your-ha-ip:8123",
+      "access_token": "your-long-lived-access-token",
+      "include_entities": [
+        "light.adaptive_living_room_light",
+        "light.adaptive_bedroom_light"
+      ]
+    }
+  ]
+}
+```
+
+### HomeKit Behavior
+
+When controlling adaptive lights through HomeKit:
+
+- **Brightness Control**: Works normally - you can adjust brightness from 0-100%
+- **Color Temperature**: Automatically calculated based on time of day
+- **On/Off**: Standard HomeKit light controls work as expected
+- **Scenes**: HomeKit scenes will work with brightness settings, color temperature adapts automatically
+
+### Benefits for HomeKit Users
+
+- **Consistent Experience**: All lights adapt automatically regardless of control method
+- **No Manual Adjustment**: Color temperature adjusts throughout the day without user intervention
+- **HomeKit Automation**: Use HomeKit automations with brightness while color temperature adapts
+- **Siri Control**: "Hey Siri, turn on the living room light" applies adaptive color temperature automatically
+
+### Troubleshooting HomeKit Integration
+
+If adaptive lights don't appear in HomeKit:
+
+1. Ensure the entities are included in your Homebridge configuration
+2. Restart Homebridge after configuration changes
+3. Check that the adaptive light entities are available in Home Assistant
+4. Verify the Homebridge Home Assistant plugin is properly authenticated
 
 ## Troubleshooting
 

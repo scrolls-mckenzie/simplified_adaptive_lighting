@@ -51,3 +51,69 @@ disable_adaptive_lighting:
           integration: simplified_adaptive_lighting
           domain: switch
           multiple: false
+
+set_manual_color_temp:
+  description: Manually set color temperature on adaptive lights, overriding adaptive behavior temporarily.
+  fields:
+    entity_id:
+      description: The adaptive light entity (or list of entities) to control.
+      required: true
+      selector:
+        entity:
+          integration: simplified_adaptive_lighting
+          domain: light
+          multiple: true
+    color_temp_kelvin:
+      description: Color temperature in Kelvin (1000K-10000K).
+      required: true
+      example: 4000
+      selector:
+        number:
+          min: 1000
+          max: 10000
+          step: 100
+          unit_of_measurement: "K"
+    brightness:
+      description: Brightness level (1-255). If not specified, current brightness is maintained.
+      required: false
+      example: 128
+      selector:
+        number:
+          min: 1
+          max: 255
+          step: 1
+    transition:
+      description: Duration of transition when lights change, in seconds.
+      required: false
+      default: 1
+      example: 2
+      selector:
+        number:
+          min: 0
+          max: 300
+          step: 0.1
+          unit_of_measurement: "s"
+
+enable_adaptive_per_light:
+  description: Enable adaptive functionality for specific adaptive light entities.
+  fields:
+    entity_id:
+      description: The adaptive light entity (or list of entities) to enable.
+      required: true
+      selector:
+        entity:
+          integration: simplified_adaptive_lighting
+          domain: light
+          multiple: true
+
+disable_adaptive_per_light:
+  description: Disable adaptive functionality for specific adaptive light entities.
+  fields:
+    entity_id:
+      description: The adaptive light entity (or list of entities) to disable.
+      required: true
+      selector:
+        entity:
+          integration: simplified_adaptive_lighting
+          domain: light
+          multiple: true

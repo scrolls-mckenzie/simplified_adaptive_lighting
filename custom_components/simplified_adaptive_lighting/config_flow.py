@@ -102,7 +102,7 @@ class SimplifiedAdaptiveLightingConfigFlow(config_entries.ConfigFlow, domain=DOM
             data_schema=data_schema,
             errors=errors,
         )    
-async def async_step_configure_lights(
+    async def async_step_configure_lights(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle per-light configuration step."""
@@ -113,6 +113,8 @@ async def async_step_configure_lights(
             for entity_id in self._selected_lights:
                 light_config = {
                     "entity_id": entity_id,
+                    "min_color_temp": user_input.get(f"{entity_id}_min_color_temp", DEFAULT_MIN_COLOR_TEMP),
+                    "max_color_temp": user_input.get(f"{entity_id}_max_color_temp", DEFAULT_MAX_COLOR_TEMP),
                     CONF_WHITE_BALANCE_OFFSET: user_input.get(f"{entity_id}_white_balance", DEFAULT_WHITE_BALANCE_OFFSET),
                     CONF_BRIGHTNESS_FACTOR: user_input.get(f"{entity_id}_brightness_factor", DEFAULT_BRIGHTNESS_FACTOR),
                 }
@@ -134,6 +136,9 @@ async def async_step_configure_lights(
         
         for entity_id in self._selected_lights:
             entity_name = self._get_entity_name(entity_id)
+            # Add per-light color temperature range configuration
+            schema_dict[vol.Optional(f"{entity_id}_min_color_temp", default=DEFAULT_MIN_COLOR_TEMP)] = vol.Range(min=1000, max=10000)
+            schema_dict[vol.Optional(f"{entity_id}_max_color_temp", default=DEFAULT_MAX_COLOR_TEMP)] = vol.Range(min=1000, max=10000)
             schema_dict[vol.Optional(f"{entity_id}_white_balance", default=DEFAULT_WHITE_BALANCE_OFFSET)] = vol.Range(min=-1000, max=1000)
             schema_dict[vol.Optional(f"{entity_id}_brightness_factor", default=DEFAULT_BRIGHTNESS_FACTOR)] = vol.Range(min=0.1, max=2.0)
 
@@ -142,7 +147,9 @@ async def async_step_configure_lights(
         return self.async_show_form(
             step_id="configure_lights",
             data_schema=data_schema,
-        )    d
+        )
+
+    d
 ef _get_light_entities(self) -> dict[str, str]:
         """Get available light entities."""
         light_entities = {}
