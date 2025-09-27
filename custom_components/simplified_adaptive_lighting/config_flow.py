@@ -202,31 +202,40 @@ class OptionsFlow(config_entries.OptionsFlow):
     ) -> FlowResult:
         """Show main options menu."""
         if user_input is not None:
-            if user_input["action"] == "configure_light":
+            if user_input["next_step_id"] == "select_light_to_configure":
                 return await self.async_step_select_light_to_configure()
-            elif user_input["action"] == "add_lights":
+            elif user_input["next_step_id"] == "add_lights":
                 return await self.async_step_add_lights()
-            elif user_input["action"] == "remove_lights":
+            elif user_input["next_step_id"] == "remove_lights":
                 return await self.async_step_remove_lights()
-            elif user_input["action"] == "global_settings":
+            elif user_input["next_step_id"] == "global_settings":
                 return await self.async_step_global_settings()
 
         # Get current configuration info
         lights_config = self.config_entry.data.get(CONF_LIGHTS, [])
-        configured_lights = [light["entity_id"] for light in lights_config]
+        configured_count = len(lights_config)
+        
+        # Create a simple description of configured lights
+        if configured_count == 0:
+            lights_description = "No lights configured"
+        elif configured_count <= 3:
+            light_names = [self._get_entity_name(light["entity_id"]) for light in lights_config]
+            lights_description = ", ".join(light_names)
+        else:
+            light_names = [self._get_entity_name(light["entity_id"]) for light in lights_config[:3]]
+            lights_description = ", ".join(light_names) + f" and {configured_count - 3} more"
 
         return self.async_show_menu(
             step_id="main_menu",
             menu_options=[
-                "configure_light",
+                "select_light_to_configure",
                 "add_lights", 
                 "remove_lights",
                 "global_settings"
             ],
             description_placeholders={
-                "configured_count": str(len(configured_lights)),
-                "configured_lights": ", ".join([self._get_entity_name(light) for light in configured_lights[:3]]) + 
-                                   (f" and {len(configured_lights) - 3} more" if len(configured_lights) > 3 else "")
+                "configured_count": str(configured_count),
+                "configured_lights": lights_description
             }
         )
 

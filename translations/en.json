@@ -39,7 +39,7 @@
         "title": "Adaptive Lighting Options",
         "description": "Currently managing {configured_count} lights: {configured_lights}",
         "menu_options": {
-          "configure_light": "Configure Individual Light",
+          "select_light_to_configure": "Configure Individual Light",
           "add_lights": "Add New Lights",
           "remove_lights": "Remove Lights",
           "global_settings": "Global Settings"
