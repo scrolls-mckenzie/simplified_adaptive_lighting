@@ -35,14 +35,11 @@
   },
   "options": {
     "step": {
-      "main_menu": {
+      "main_options": {
         "title": "Adaptive Lighting Options",
-        "description": "Currently managing {configured_count} lights: {configured_lights}",
-        "menu_options": {
-          "select_light_to_configure": "Configure Individual Light",
-          "add_lights": "Add New Lights",
-          "remove_lights": "Remove Lights",
-          "global_settings": "Global Settings"
+        "description": "Currently managing {configured_count} lights: {configured_lights}\n\nChoose what you want to configure:",
+        "data": {
+          "action": "Action"
         }
       },
       "select_light_to_configure": {
@@ -53,17 +50,13 @@
         }
       },
       "configure_selected_light": {
-        "title": "Configure {light_name}",
-        "description": "Adjust white balance and brightness settings for this light",
+        "title": "Configure {light_name} White Balance",
+        "description": "Adjust white balance to match color appearance across different light brands.\n\nWhite Balance Offset: Use positive values (+100, +200) to make warmer/more yellow, negative values (-100, -200) to make cooler/more blue.\n\nBrightness Factor: Adjust relative brightness (0.8 = 80%, 1.2 = 120%)",
         "data": {
           "min_color_temp": "Minimum Color Temperature (K)",
           "max_color_temp": "Maximum Color Temperature (K)",
           "white_balance_offset": "White Balance Offset (K)",
           "brightness_factor": "Brightness Factor"
-        },
-        "data_description": {
-          "white_balance_offset": "Positive values make warmer, negative values make cooler (-1000 to +1000)",
-          "brightness_factor": "Multiplier for brightness (0.1 = 10%, 1.0 = 100%, 2.0 = 200%)"
         }
       },
       "add_lights": {
@@ -112,6 +105,10 @@
     "disable_adaptive_lighting": {
       "name": "Disable adaptive lighting", 
       "description": "Disable adaptive lighting for the specified switch."
+    },
+    "test_white_balance": {
+      "name": "Test white balance",
+      "description": "Test white balance offset for a light to help fine-tune color matching across different brands."
     }
   }
 }

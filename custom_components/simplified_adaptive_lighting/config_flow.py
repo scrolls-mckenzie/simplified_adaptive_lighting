@@ -195,20 +195,21 @@ class OptionsFlow(config_entries.OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Manage the options."""
-        return await self.async_step_main_menu()
+        return await self.async_step_main_options()
 
-    async def async_step_main_menu(
+    async def async_step_main_options(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Show main options menu."""
+        """Show main options form."""
         if user_input is not None:
-            if user_input["next_step_id"] == "select_light_to_configure":
+            action = user_input.get("action")
+            if action == "configure_light":
                 return await self.async_step_select_light_to_configure()
-            elif user_input["next_step_id"] == "add_lights":
+            elif action == "add_lights":
                 return await self.async_step_add_lights()
-            elif user_input["next_step_id"] == "remove_lights":
+            elif action == "remove_lights":
                 return await self.async_step_remove_lights()
-            elif user_input["next_step_id"] == "global_settings":
+            elif action == "global_settings":
                 return await self.async_step_global_settings()
 
         # Get current configuration info
@@ -225,14 +226,21 @@ class OptionsFlow(config_entries.OptionsFlow):
             light_names = [self._get_entity_name(light["entity_id"]) for light in lights_config[:3]]
             lights_description = ", ".join(light_names) + f" and {configured_count - 3} more"
 
-        return self.async_show_menu(
-            step_id="main_menu",
-            menu_options=[
-                "select_light_to_configure",
-                "add_lights", 
-                "remove_lights",
-                "global_settings"
-            ],
+        # Create action options
+        action_options = {
+            "configure_light": "Configure Individual Light White Balance",
+            "add_lights": "Add New Lights",
+            "remove_lights": "Remove Lights", 
+            "global_settings": "Global Settings"
+        }
+
+        data_schema = vol.Schema({
+            vol.Required("action"): vol.In(action_options),
+        })
+
+        return self.async_show_form(
+            step_id="main_options",
+            data_schema=data_schema,
             description_placeholders={
                 "configured_count": str(configured_count),
                 "configured_lights": lights_description

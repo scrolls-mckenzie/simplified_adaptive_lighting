@@ -120,6 +120,7 @@ SERVICE_DISABLE_ADAPTIVE_LIGHTING = "disable_adaptive_lighting"
 SERVICE_SET_MANUAL_COLOR_TEMP = "set_manual_color_temp"
 SERVICE_ENABLE_ADAPTIVE_PER_LIGHT = "enable_adaptive_per_light"
 SERVICE_DISABLE_ADAPTIVE_PER_LIGHT = "disable_adaptive_per_light"
+SERVICE_TEST_WHITE_BALANCE = "test_white_balance"
 
 APPLY_ADAPTIVE_SETTINGS_SCHEMA = vol.Schema(
     {
@@ -147,6 +148,15 @@ SET_MANUAL_COLOR_TEMP_SCHEMA = vol.Schema(
 ENABLE_DISABLE_PER_LIGHT_SCHEMA = vol.Schema(
     {
         vol.Required("entity_id"): cv.entity_ids,
+    }
+)
+
+TEST_WHITE_BALANCE_SCHEMA = vol.Schema(
+    {
+        vol.Required("entity_id"): cv.entity_id,
+        vol.Required("white_balance_offset"): vol.All(vol.Coerce(int), vol.Range(min=-1000, max=1000)),
+        vol.Optional("brightness"): vol.All(vol.Coerce(int), vol.Range(min=1, max=255)),
+        vol.Optional("transition", default=1): vol.All(vol.Coerce(float), vol.Range(min=0, max=300)),
     }
 )
 
@@ -385,6 +395,60 @@ async def _async_register_services(hass: HomeAssistant) -> None:
         schema=ENABLE_DISABLE_PER_LIGHT_SCHEMA,
     )
     
+    async def async_test_white_balance(call: ServiceCall) -> None:
+        """Handle test_white_balance service call."""
+        entity_id = call.data["entity_id"]
+        white_balance_offset = call.data["white_balance_offset"]
+        brightness = call.data.get("brightness")
+        transition = call.data.get("transition", 1)
+        
+        # Get the adaptive light entity
+        light_component = hass.data.get("entity_components", {}).get("light")
+        if not light_component:
+            raise ServiceValidationError(f"Light component not found")
+        
+        entity = light_component.get_entity(entity_id)
+        if not entity:
+            raise ServiceValidationError(f"Adaptive light entity {entity_id} not found")
+        
+        # Check if it's one of our adaptive light entities
+        if not hasattr(entity, '_manager'):
+            raise ServiceValidationError(f"Entity {entity_id} is not an adaptive light entity")
+        
+        # Calculate current adaptive settings
+        try:
+            adaptive_settings = entity._manager.calculate_adaptive_settings(entity._target_entity_id)
+            
+            # Apply white balance offset to the color temperature
+            test_color_temp = adaptive_settings.color_temp_kelvin + white_balance_offset
+            
+            # Use provided brightness or adaptive brightness
+            test_brightness = brightness if brightness is not None else adaptive_settings.brightness
+            
+            # Apply the test settings to the target light
+            service_data = {
+                "entity_id": entity._target_entity_id,
+                "color_temp_kelvin": test_color_temp,
+                "brightness": test_brightness,
+                "transition": transition,
+            }
+            
+            await hass.services.async_call("light", "turn_on", service_data)
+            
+            _LOGGER.info("Applied test white balance offset %dK to %s (color_temp: %dK)", 
+                        white_balance_offset, entity_id, test_color_temp)
+                        
+        except Exception as err:
+            _LOGGER.error("Failed to test white balance for %s: %s", entity_id, err)
+            raise ServiceValidationError(f"Failed to test white balance: {err}")
+    
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_TEST_WHITE_BALANCE,
+        async_test_white_balance,
+        schema=TEST_WHITE_BALANCE_SCHEMA,
+    )
+    
     _LOGGER.debug("Registered services for %s", DOMAIN)
 
 
@@ -397,6 +461,7 @@ def _async_unregister_services(hass: HomeAssistant) -> None:
         SERVICE_SET_MANUAL_COLOR_TEMP,
         SERVICE_ENABLE_ADAPTIVE_PER_LIGHT,
         SERVICE_DISABLE_ADAPTIVE_PER_LIGHT,
+        SERVICE_TEST_WHITE_BALANCE,
     ]
     
     for service in services_to_remove:

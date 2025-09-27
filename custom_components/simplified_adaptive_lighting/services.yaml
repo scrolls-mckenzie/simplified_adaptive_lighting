@@ -116,4 +116,45 @@ disable_adaptive_per_light:
         entity:
           integration: simplified_adaptive_lighting
           domain: light
-          multiple: true
+          multiple: truet
+est_white_balance:
+  description: Test white balance offset for a light to help fine-tune color matching across different brands.
+  fields:
+    entity_id:
+      description: The adaptive light entity to test.
+      required: true
+      selector:
+        entity:
+          integration: simplified_adaptive_lighting
+          domain: light
+          multiple: false
+    white_balance_offset:
+      description: White balance offset in Kelvin. Positive values make warmer (+100K = more yellow), negative values make cooler (-100K = more blue).
+      required: true
+      example: 100
+      selector:
+        number:
+          min: -1000
+          max: 1000
+          step: 50
+          unit_of_measurement: "K"
+    brightness:
+      description: Test brightness level (1-255). If not specified, uses current adaptive brightness.
+      required: false
+      example: 128
+      selector:
+        number:
+          min: 1
+          max: 255
+          step: 1
+    transition:
+      description: Duration of transition when lights change, in seconds.
+      required: false
+      default: 1
+      example: 2
+      selector:
+        number:
+          min: 0
+          max: 300
+          step: 0.1
+          unit_of_measurement: "s"
